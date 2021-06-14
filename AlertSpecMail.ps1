@@ -14,10 +14,10 @@ foreach ($sMail in $eMaillist) {
 }
 
 $allIssued = ""
-$allIssued = (Get-CertificationAuthority -ComputerName $pkiServer | Get-IssuedRequest -Property CommonName | ? {$_.CertificateTemplate -like "Isracard - MainFrame" -and $_.NotAfter -le (Get-Date).AddDays(90) -and $_.NotAfter -ge (Get-Date)} | sort CommonName -Unique | sort NotAfter | select Request.RequesterName,CommonName,CertificateTemplate,NotAfter)
+$allIssued = (Get-CertificationAuthority -ComputerName $pkiServer | Get-IssuedRequest -Property CommonName | ? {$_.CertificateTemplate -like "Specific - Template" -and $_.NotAfter -le (Get-Date).AddDays(90) -and $_.NotAfter -ge (Get-Date)} | sort CommonName -Unique | sort NotAfter | select Request.RequesterName,CommonName,CertificateTemplate,NotAfter)
 if ($allIssued.Count -ge 1) {
     $_tmp = ($allIssued | ConvertTo-Html | tee C:\temp\MFcert.html -Append)
-    $_tmp = gc C:\temp\MFcert.html | Out-String
-    Send-MailMessage -SmtpServer $mailServer -BodyAsHtml -Body $_tmp  -From $pkiMailFrom -To SecurityMF@isracard.co.il -Subject "Certificates that will expire in 90 days - From the MainFrame Certificate Template" 
-    rm -Force C:\temp\MFcert.html
+    $_tmp = gc C:\temp\cert.html | Out-String
+    Send-MailMessage -SmtpServer $mailServer -BodyAsHtml -Body $_tmp  -From $pkiMailFrom -To Security@Mail.co.il -Subject "Certificates that will expire in 90 days - From the MainFrame Certificate Template" 
+    rm -Force C:\temp\cert.html
 }
